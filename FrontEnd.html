@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document Analyzer</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin: 20px;
+		}
+		.form-container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			border: 1px solid #ccc;
+			padding: 20px;
+			margin-bottom: 20px;
+			width: 80%;
+			max-width: 800px;
+		}
+		input[type="file"] {
+			margin-bottom: 10px;
+		}
+		button[type="submit"] {
+			background-color: #4CAF50;
+			color: white;
+			padding: 10px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.result-container {
+			flex-direction: column;
+			align-items: center;
+			border: 1px solid #ccc;
+			padding: 20px;
+			width: 80%;
+			max-width: 800px;
+		}
+		.result-link {
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Document Analyzer</h1>
+		<div class="form-container">
+			<form id="upload-form" method="post" enctype="multipart/form-data">
+					<input type="file" id="file-input" name="file" accept=".png, .jpg, .jpeg, .tiff, .pdf">
+				<button type="submit">Analyze</button>
+			</form>
+		</div>
+		<div class="result-container">
+			<h2>Analysis Result</h2>
+			<p id="result-text"></p>
+			<a id="result-link" href="/download" download>Download Result PDF</a>
+		</div>
+	</div>
+
+	<script>
+		const form = document.getElementById('upload-form');
+		const resultContainer = document.querySelector('.result-container');
+		const resultText = document.getElementById('result-text');
+		const resultLink = document.getElementById('result-link');
+		const fileInput = document.getElementById('file-input');
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			const file = fileInput.files[0];
+			const formData = new FormData();
+			formData.append('file', file);
+                const response = await fetch('/analyze', {
+					method: 'POST',
+					body: formData
+				});
+				const data = await response.json();
+				resultText.textContent = 'Analysis complete. Click the download link below to download the result Excel.';
+				resultLink.style.display = 'block';
+			resultContainer.style.display = 'block';
+		});
+	</script>
+</body>
+</html>
